@@ -1,0 +1,13 @@
+.cocos-project.json
+/linux-build
+/bin
+/cocos2d
+
+#QtCreator stuff
+AntiAirborne*.cflags
+AntiAirborne*.config
+AntiAirborne*.creator
+AntiAirborne*.creator.user
+AntiAirborne*.cxxflags
+AntiAirborne*.files
+AntiAirborne*.includes
