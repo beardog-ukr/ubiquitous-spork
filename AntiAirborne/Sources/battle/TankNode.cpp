@@ -1,6 +1,7 @@
 #include "TankNode.h"
 using namespace anti_airborne;
 
+#include "BulletNode.h"
 #include "ZOrderConstTypes.h"
 #include "ZOrderConstValues.h"
 
@@ -139,6 +140,22 @@ TankNode* TankNode::create(shared_ptr<SixCatsLogger> inC6) {
 
   pRet->autorelease();
   return pRet;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+BulletNode* TankNode::doFire() {
+  BulletNode* bullet = BulletNode::create(c6);
+  if(bullet == nullptr) {
+    return bullet;
+  }
+
+  Vec2 bulletPoint = calculateAnglePos(angle, 60);
+//  bullet->setPosition(bulletPoint);
+  bullet->setRotation(-1*angle);
+  bullet->setRoute(bulletPoint, crosshair->getPosition());
+
+  return bullet;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

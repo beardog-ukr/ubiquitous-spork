@@ -1,5 +1,6 @@
 #include "BattleScene.h"
 
+#include "battle/BulletNode.h"
 #include "battle/ParatrooperNode.h"
 #include "battle/PlaneNode.h"
 #include "battle/TankNode.h"
@@ -40,6 +41,7 @@ static const struct {
 static const float kDropsInterval = 5;// interval between drop oprations in seconds
 
 static const string kPlistFileName = "battle_scene.plist";
+static const string kPlistAnimationsFileName = "battle_animations.plist";
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
@@ -243,8 +245,8 @@ bool BattleScene::loadSpriteCache(std::shared_ptr<SixCatsLogger> c6) {
     return false;
   }
 
-  // AnimationCache * const ac = AnimationCache::getInstance();
-  // ac->addAnimationsWithFile(kAnimationsPlistFileName);
+  AnimationCache * const ac = AnimationCache::getInstance();
+  ac->addAnimationsWithFile(kPlistAnimationsFileName);
 
   return true;
 }
@@ -268,6 +270,9 @@ void BattleScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
   }
   else if (EventKeyboard::KeyCode::KEY_DOWN_ARROW == keyCode) {
     tankNode->startDecreasingDistance();
+  }
+  else if (EventKeyboard::KeyCode::KEY_SPACE == keyCode) {
+    processFireRequest();
   }
   else if (EventKeyboard::KeyCode::KEY_P == keyCode) {
     doDropTroopers(0);
@@ -304,8 +309,26 @@ void BattleScene::onKeyReleasedScene(EventKeyboard::KeyCode keyCode, Event *) {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
+void BattleScene::processFireRequest() {
+  BulletNode* bullet = tankNode->doFire();
+  if (bullet == nullptr) {
+    C6_W1(c6, "Bullet wasn't created");
+    return;
+  }
+
+
+  bullet->reevaluatePosition(tankNode->getPosition());
+//  bullet->setPosition(nbp);
+
+  addChild(bullet, kBattleSceneZO.bullet);
+
+  bullet->doGo();
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
 void BattleScene::unloadSpriteCache() {
-  // ActorNode::unloadAnimations();
+  BulletNode::unloadAnimations();
   SpriteFrameCache::getInstance()->removeSpriteFramesFromFile(kPlistFileName);
 }
 

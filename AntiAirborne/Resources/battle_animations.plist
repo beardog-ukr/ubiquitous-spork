@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>animations</key>
+  <dict>
+
+  <key>explosion</key>
+  <dict>
+    <key>delay</key>
+    <real>0.2</real>
+    <key>frames</key>
+    <array>
+      <string>anti_aiborne/explosion/explosion_00</string>
+      <string>anti_aiborne/explosion/explosion_01</string>
+      <string>anti_aiborne/explosion/explosion_02</string>
+      <string>anti_aiborne/explosion/explosion_03</string>
+      <string>anti_aiborne/explosion/explosion_04</string>
+      <string>anti_aiborne/explosion/explosion_05</string>
+      <string>anti_aiborne/explosion/explosion_06</string>
+      <string>anti_aiborne/explosion/explosion_07</string>
+      <string>anti_aiborne/explosion/explosion_08</string>
+    </array>
+  </dict>
+
+  <key>paratrooper_jump</key>
+  <dict>
+    <key>delay</key>
+    <real>0.2</real>
+    <key>frames</key>
+    <array>
+      <string>anti_aiborne/paratrooper/gunner_jump_00</string>
+      <string>anti_aiborne/paratrooper/gunner_jump_01</string>
+    </array>
+  </dict>
+
+  <key>paratrooper_land</key>
+  <dict>
+    <key>delay</key>
+    <real>0.2</real>
+    <key>frames</key>
+    <array>
+      <string>anti_aiborne/paratrooper/gunner_crouch_00</string>
+      <string>anti_aiborne/paratrooper/gunner_crouch_01</string>
+      <string>anti_aiborne/paratrooper/gunner_crouch_02</string>
+    </array>
+  </dict>
+
+</dict>
+</dict>
+</plist>

@@ -8,6 +8,8 @@
 
 namespace anti_airborne {
 
+class BulletNode;
+
 class TankNode : public cocos2d::Node, virtual public SixCatsLoggerLoggable {
 public:
   static TankNode* create(std::shared_ptr<SixCatsLogger> c6);
@@ -21,6 +23,8 @@ public:
   void stopIncreasingDistance();
   void startDecreasingDistance();
   void stopDecreasingDistance();
+
+  BulletNode* doFire();
 
 protected:
   TankNode();

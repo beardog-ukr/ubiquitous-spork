@@ -24,12 +24,13 @@ protected:
   bool initPlane();
   bool initKeyboardProcessing();
 
+  void processFireRequest();
+
   void onKeyPressedScene(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *);
   void onKeyReleasedScene(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *);
 
   TankNode* tankNode;
 
-//  ParatrooperNode* paratrooper;
   std::list<ParatrooperNode*> paratroopers;
   PlaneNode* plane;
 

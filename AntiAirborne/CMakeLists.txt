@@ -33,6 +33,7 @@ endif()
 list(APPEND GAME_SOURCE
      Sources/AppDelegate.cpp
      Sources/ZOrderConstImplementation.cpp
+     Sources/battle/BulletNode.cpp
      Sources/battle/BattleScene.cpp
      Sources/battle/ParatrooperNode.cpp
      Sources/battle/PlaneNode.cpp
@@ -42,6 +43,7 @@ list(APPEND GAME_HEADER
      Sources/AppDelegate.h
      Sources/ZOrderConstTypes.h
      Sources/ZOrderConstValues.h
+     Sources/battle/BulletNode.h
      Sources/battle/BattleScene.h
      Sources/battle/ParatrooperNode.h
      Sources/battle/PlaneNode.h

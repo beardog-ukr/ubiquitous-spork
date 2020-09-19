@@ -16,6 +16,9 @@ const struct anti_airborne::BattleSceneZOrderValues anti_airborne::kBattleSceneZ
 
   .plane = 40,
 
-  .crosshair = 50
+  .bullet = 50,
+  .explosion = 55,
+
+  .crosshair = 60
 };
 

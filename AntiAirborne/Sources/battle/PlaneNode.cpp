@@ -88,6 +88,7 @@ list<ParatrooperNode*> PlaneNode::doOnePass() {
 
   MoveTo* moveToDrop = MoveTo::create(timeToDrop, dropPoint);
   //TODO: use acceleration/deceleration here
+//  EaseIn* ea = EaseIn::create(mta, 3.0f);
 
   float pathFromDrop = kFinishX - dropPoint.x;
   float timeFromDrop = pathFromDrop / kGeneralVelocity;

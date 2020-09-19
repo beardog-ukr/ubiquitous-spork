@@ -17,6 +17,9 @@ struct BattleSceneZOrderValues {
 
   int plane;
 
+  int bullet;
+  int explosion;
+
   int crosshair;
 
 };
