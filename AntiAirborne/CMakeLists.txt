@@ -34,12 +34,14 @@ list(APPEND GAME_SOURCE
      Sources/AppDelegate.cpp
      Sources/ZOrderConstImplementation.cpp
      Sources/battle/BattleScene.cpp
+     Sources/battle/TankNode.cpp
      )
 list(APPEND GAME_HEADER
      Sources/AppDelegate.h
      Sources/ZOrderConstTypes.h
      Sources/ZOrderConstValues.h
      Sources/battle/BattleScene.h
+     Sources/battle/TankNode.h
      )
 
 if(ANDROID)
