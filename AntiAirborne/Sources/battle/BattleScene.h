@@ -5,6 +5,8 @@
 
 namespace anti_airborne {
 
+class ParatrooperNode;
+class PlaneNode;
 class TankNode;
 
 class BattleScene : public cocos2d::Scene,  virtual public SixCatsLoggerLoggable {
@@ -19,12 +21,19 @@ protected:
   bool initBackground();
   bool initOther();
   bool initTank();
+  bool initPlane();
   bool initKeyboardProcessing();
 
   void onKeyPressedScene(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *);
   void onKeyReleasedScene(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *);
 
   TankNode* tankNode;
+
+//  ParatrooperNode* paratrooper;
+  std::list<ParatrooperNode*> paratroopers;
+  PlaneNode* plane;
+
+  void doDropTroopers(float unused);
 
   static bool loadSpriteCache(std::shared_ptr<SixCatsLogger> c6);
   static void unloadSpriteCache();

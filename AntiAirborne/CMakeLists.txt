@@ -34,6 +34,8 @@ list(APPEND GAME_SOURCE
      Sources/AppDelegate.cpp
      Sources/ZOrderConstImplementation.cpp
      Sources/battle/BattleScene.cpp
+     Sources/battle/ParatrooperNode.cpp
+     Sources/battle/PlaneNode.cpp
      Sources/battle/TankNode.cpp
      )
 list(APPEND GAME_HEADER
@@ -41,6 +43,8 @@ list(APPEND GAME_HEADER
      Sources/ZOrderConstTypes.h
      Sources/ZOrderConstValues.h
      Sources/battle/BattleScene.h
+     Sources/battle/ParatrooperNode.h
+     Sources/battle/PlaneNode.h
      Sources/battle/TankNode.h
      )
 

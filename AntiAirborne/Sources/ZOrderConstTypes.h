@@ -12,6 +12,10 @@ struct BattleSceneZOrderValues {
   int tankBody;
 
   int paratrooper;
+  int paraBody;
+  int parachute;
+
+  int plane;
 
   int crosshair;
 

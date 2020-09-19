@@ -11,7 +11,11 @@ const struct anti_airborne::BattleSceneZOrderValues anti_airborne::kBattleSceneZ
   .tankBody = 22,
 
   .paratrooper = 30,
+  .paraBody = 32,
+  .parachute = 31,
 
-  .crosshair = 40
+  .plane = 40,
+
+  .crosshair = 50
 };
 

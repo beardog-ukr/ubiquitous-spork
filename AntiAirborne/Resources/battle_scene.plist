@@ -4,18 +4,93 @@
  <dict>
   <key>frames</key>
   <dict>
-   <key>anti_aiborne/planes/paratrooper</key>
+   <key>anti_aiborne/paratrooper/gunner_crouch_00</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{2,1}</string>
+    <key>spriteSize</key>
+    <string>{28,33}</string>
+    <key>spriteSourceSize</key>
+    <string>{48,48}</string>
+    <key>textureRect</key>
+    <string>{{213,122},{28,33}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>anti_aiborne/paratrooper/gunner_crouch_01</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{2,1}</string>
+    <key>spriteSize</key>
+    <string>{28,32}</string>
+    <key>spriteSourceSize</key>
+    <string>{48,48}</string>
+    <key>textureRect</key>
+    <string>{{183,177},{28,32}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>anti_aiborne/paratrooper/gunner_crouch_02</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{3,0}</string>
+    <key>spriteSize</key>
+    <string>{28,29}</string>
+    <key>spriteSourceSize</key>
+    <string>{48,48}</string>
+    <key>textureRect</key>
+    <string>{{213,190},{28,29}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>anti_aiborne/paratrooper/gunner_jump_00</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{3,1}</string>
+    <key>spriteSize</key>
+    <string>{28,31}</string>
+    <key>spriteSourceSize</key>
+    <string>{48,48}</string>
+    <key>textureRect</key>
+    <string>{{213,157},{28,31}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>anti_aiborne/paratrooper/gunner_jump_01</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{3,2}</string>
+    <key>spriteSize</key>
+    <string>{28,34}</string>
+    <key>spriteSourceSize</key>
+    <string>{48,48}</string>
+    <key>textureRect</key>
+    <string>{{153,177},{28,34}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>anti_aiborne/paratrooper/para</key>
    <dict>
     <key>aliases</key>
     <array/>
     <key>spriteOffset</key>
     <string>{0,0}</string>
     <key>spriteSize</key>
-    <string>{89,123}</string>
+    <string>{75,103}</string>
     <key>spriteSourceSize</key>
-    <string>{89,123}</string>
+    <string>{75,103}</string>
     <key>textureRect</key>
-    <string>{{0,122},{89,123}}</string>
+    <string>{{0,122},{75,103}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -45,7 +120,7 @@
     <key>spriteSourceSize</key>
     <string>{84,53}</string>
     <key>textureRect</key>
-    <string>{{91,122},{84,53}}</string>
+    <string>{{77,122},{84,53}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -60,7 +135,7 @@
     <key>spriteSourceSize</key>
     <string>{64,64}</string>
     <key>textureRect</key>
-    <string>{{167,177},{48,48}}</string>
+    <string>{{163,122},{48,48}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -75,7 +150,7 @@
     <key>spriteSourceSize</key>
     <string>{74,35}</string>
     <key>textureRect</key>
-    <string>{{91,177},{74,35}}</string>
+    <string>{{77,177},{74,35}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -90,7 +165,7 @@
     <key>spriteSourceSize</key>
     <string>{40,12}</string>
     <key>textureRect</key>
-    <string>{{177,122},{40,12}}</string>
+    <string>{{153,213},{40,12}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -105,7 +180,7 @@
     <key>spriteSourceSize</key>
     <string>{20,13}</string>
     <key>textureRect</key>
-    <string>{{177,136},{20,13}}</string>
+    <string>{{220,0},{20,13}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -115,7 +190,7 @@
    <key>format</key>
    <integer>3</integer>
    <key>size</key>
-   <string>{220,247}</string>
+   <string>{243,227}</string>
    <key>textureFileName</key>
    <string>battle_scene.png</string>
   </dict>

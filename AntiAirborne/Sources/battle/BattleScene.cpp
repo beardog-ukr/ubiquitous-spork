@@ -1,6 +1,7 @@
 #include "BattleScene.h"
 
-
+#include "battle/ParatrooperNode.h"
+#include "battle/PlaneNode.h"
 #include "battle/TankNode.h"
 #include "ZOrderConstTypes.h"
 #include "ZOrderConstValues.h"
@@ -35,6 +36,8 @@ static const struct {
   .paratrooper = "paratrooper.png",
   .tank = "tank.png"
 };
+
+static const float kDropsInterval = 5;// interval between drop oprations in seconds
 
 static const string kPlistFileName = "battle_scene.plist";
 
@@ -80,6 +83,20 @@ Scene* BattleScene::createScene(std::shared_ptr<SixCatsLogger> inC6) {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
+void BattleScene::doDropTroopers(float) {
+  C6_D1(c6, "Starting new drop operaion");
+
+  list<ParatrooperNode*> newTroopers = plane->doOnePass();
+
+  for(ParatrooperNode* nt: newTroopers) {
+    addChild(nt, kBattleSceneZO.paratrooper);
+    nt->doDrop();
+    paratroopers.push_back(nt);
+  }
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
 bool BattleScene::init() {
   if ( !Scene::init() ) {
     return false;
@@ -90,6 +107,10 @@ bool BattleScene::init() {
   }
 
   if (!initOther() ) {
+    return false;
+  }
+
+  if (!initPlane()) {
     return false;
   }
 
@@ -135,25 +156,25 @@ bool BattleScene::initBackground() {
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 bool BattleScene::initOther() {
-  Sprite* planeSprite = Sprite::create(kElementsSpriteFileNames.plane);
-  if (planeSprite == nullptr) {
-    C6_C2(c6, "Failed to find ", kElementsSpriteFileNames.plane);
-    return false;
-  }
+//  Sprite* planeSprite = Sprite::create(kElementsSpriteFileNames.plane);
+//  if (planeSprite == nullptr) {
+//    C6_C2(c6, "Failed to find ", kElementsSpriteFileNames.plane);
+//    return false;
+//  }
 
   const Size cs = getContentSize();
-  planeSprite->setPosition(Vec2(cs.width/2, cs.height/2 + cs.height/4));
-  addChild(planeSprite, kBattleSceneZO.terrain);
+//  planeSprite->setPosition(Vec2(cs.width/2, cs.height/2 + cs.height/4));
+//  addChild(planeSprite, kBattleSceneZO.terrain);
 
-  Sprite* paratrooperSprite = Sprite::create(kElementsSpriteFileNames.paratrooper);
-  if (paratrooperSprite == nullptr) {
-    C6_C2(c6, "Failed to find ", kElementsSpriteFileNames.paratrooper);
-    return false;
-  }
+//  Sprite* paratrooperSprite = Sprite::create(kElementsSpriteFileNames.paratrooper);
+//  if (paratrooperSprite == nullptr) {
+//    C6_C2(c6, "Failed to find ", kElementsSpriteFileNames.paratrooper);
+//    return false;
+//  }
 
 
-  paratrooperSprite->setPosition(Vec2(cs.width/2, cs.height/2));
-  addChild(paratrooperSprite, kBattleSceneZO.terrain);
+//  paratrooperSprite->setPosition(Vec2(cs.width/2, cs.height/2));
+//  addChild(paratrooperSprite, kBattleSceneZO.terrain);
 
 //  Sprite* tankSprite = Sprite::create(kElementsSpriteFileNames.tank);
 //  if (tankSprite == nullptr) {
@@ -164,6 +185,33 @@ bool BattleScene::initOther() {
 
 //  tankSprite->setPosition(Vec2(cs.width/2, cs.height/8));
 //  addChild(tankSprite, kBattleSceneZO.terrain);
+
+
+//  paratrooper = ParatrooperNode::create(c6);
+//  if( paratrooper == nullptr) {
+//    return false;
+//  }
+
+//  paratrooper->setPosition(Vec2(cs.width/4, cs.height/2));
+//  addChild(paratrooper, kBattleSceneZO.paratrooper);
+
+  return true;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+bool BattleScene::initPlane() {
+  plane = PlaneNode::create(c6);
+  if (plane == nullptr) {
+    return false;
+  }
+
+//  const Size cs = getContentSize();
+//  plane->setPosition(Vec2(cs.width/4 + cs.width/2, kPlaneEchelone));
+  addChild(plane, kBattleSceneZO.plane);
+
+//  schedule(CC_SCHEDULE_SELECTOR(BattleScene::doDropTroopers), kDropsInterval,
+//           CC_REPEAT_FOREVER, 0);
 
   return true;
 }
@@ -220,6 +268,9 @@ void BattleScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
   }
   else if (EventKeyboard::KeyCode::KEY_DOWN_ARROW == keyCode) {
     tankNode->startDecreasingDistance();
+  }
+  else if (EventKeyboard::KeyCode::KEY_P == keyCode) {
+    doDropTroopers(0);
   }
   else if (EventKeyboard::KeyCode::KEY_X == keyCode) {
     C6_D1(c6, "Need to get out (debug, x pressed).");
