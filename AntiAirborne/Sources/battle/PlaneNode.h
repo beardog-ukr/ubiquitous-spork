@@ -18,6 +18,8 @@ protected:
   PlaneNode();
   virtual ~PlaneNode();
 
+  int dropsPerOperation;
+
   bool initSelf();
 };
 

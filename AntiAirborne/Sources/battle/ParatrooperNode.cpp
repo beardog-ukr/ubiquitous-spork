@@ -8,7 +8,6 @@ using namespace anti_airborne;
 #include "SixCatsLoggerMacro.h"
 #include <sstream>
 
-//#include <tgmath.h>  // sin cos
 USING_NS_CC;
 using namespace std;
 
@@ -22,20 +21,24 @@ static const float kFallingInterval = 20.0;
 static const struct {
   string body;
   string parachute;
-//  string tracks;
-//  string turret;
 } kElementSpriteFileNames = {
   .body = "anti_aiborne/paratrooper/gunner_jump_00",
   .parachute = "anti_aiborne/paratrooper/para",
-//  .tracks = "anti_aiborne/tank/tracks",
-//  .turret = "anti_aiborne/tank/turret1",
 };
+
+static const int kJumpAnimationTag = 69;
+static const string kJumpAnimationName = "paratrooper_jump";
+static const string kRunAnimationName = "paratrooper_run";
+
+static const int kScreenMiddle = 640;
+static const int kEscapePointLeft = -30;
+static const int kEscapePointRight = 1280 + 30;
+static const float kEscapeVelocity = 75 / 1.0;
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 ParatrooperNode::ParatrooperNode() {
-//  angle = 45;
-//  distance = 200;
+  alive = true;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -65,10 +68,21 @@ ParatrooperNode* ParatrooperNode::create(shared_ptr<SixCatsLogger> inC6) {
   return pRet;
 }
 
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+void ParatrooperNode::doDie() {
+  alive = false;
+  parachute->stopAllActions();
+  body->stopAllActions();
+
+  body->runAction(FadeOut::create(kFadeinInterval));
+  parachute->runAction(FadeOut::create(kFadeinInterval));
+}
+
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-void ParatrooperNode::doDrop() {
+void ParatrooperNode::doDrop(CallFunc *escapeNotifier) {
   C6_D6(c6, "Do drop with delay: ", dropDelay,
         "Drop point ", dropPoint.x, ":", dropPoint.y);
 
@@ -79,7 +93,6 @@ void ParatrooperNode::doDrop() {
                                        FadeIn::create(kFadeinInterval),
                                        DelayTime::create(kFallingInterval-kFadeinInterval*2),
                                        FadeOut::create(kFadeinInterval),
-                                       RemoveSelf::create(),
                                        nullptr);
   parachute->runAction(seqPara);
 
@@ -91,11 +104,37 @@ void ParatrooperNode::doDrop() {
   Sequence* seqBody = Sequence::create(DelayTime::create(dropDelay), cf, nullptr);
   body->runAction(seqBody);
 
-  // --- fall
+  // --- body animation
+  Animation* animationE = AnimationCache::getInstance()->getAnimation(kJumpAnimationName);
+  Animate* animateE = Animate::create(animationE);
+  Repeat* ra = Repeat::create(animateE, 100);
+  ra->setTag(kJumpAnimationTag);
+  body->runAction(ra);
+
+  // --- fall + escape
   Vec2 destinationPoint(dropPoint.x, body->getContentSize().height/2);
-  MoveTo* moveTo = MoveTo::create(kFallingInterval, destinationPoint);
-  Sequence* seqFall = Sequence::create(DelayTime::create(dropDelay), moveTo, nullptr);
-  runAction(seqFall);
+  MoveTo* fallMT = MoveTo::create(kFallingInterval, destinationPoint);
+
+  MoveTo* escapeMT;
+  CallFunc* animationLaunchCF = CallFunc::create([this] {
+    this->launchRunningAnimation();
+  });;
+
+  if (dropPoint.x < kScreenMiddle) {
+    Vec2 escapePoint(kEscapePointLeft, destinationPoint.y);
+    float escapeTime = (dropPoint.x - escapePoint.x)/kEscapeVelocity;
+    escapeMT = MoveTo::create(escapeTime, escapePoint);
+  }
+  else {
+    Vec2 escapePoint(kEscapePointRight, destinationPoint.y);
+    const float escapeTime = (escapePoint.x - dropPoint.x)/kEscapeVelocity;
+    escapeMT = MoveTo::create(escapeTime, escapePoint);
+
+  }
+
+  Sequence* seqFallEscape = Sequence::create(DelayTime::create(dropDelay), fallMT,
+                                             animationLaunchCF, escapeMT, escapeNotifier, nullptr);
+  runAction(seqFallEscape);
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -134,6 +173,27 @@ bool ParatrooperNode::initSelf() {
   }
 
   return true;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+bool ParatrooperNode::isAlive() const {
+  return alive;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+void ParatrooperNode::launchRunningAnimation() {
+  C6_D1(c6, "here");
+  Animation* animationE = AnimationCache::getInstance()->getAnimation(kRunAnimationName);
+  Animate* animateE = Animate::create(animationE);
+
+  body->stopAllActionsByTag(kJumpAnimationTag);
+  body->runAction(RepeatForever::create(animateE));
+
+  if (getPosition().x < kScreenMiddle) {// mirror soldier if it goes left
+    body->setScaleX(-1);
+  }
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

@@ -18,6 +18,9 @@ static const int kDistanceManipulationActionTag = 22;
 static const float kAngleChangeInterval = 0.5;
 static const float kDistanceChangeInterval = 0.5;
 
+static const int kAngleStep = 10;
+static const int kDistanceStep = 40;
+
 static const struct {
   string body;
   string crosshair;
@@ -33,7 +36,7 @@ static const struct {
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 TankNode::TankNode() {
-  angle = 45;
+  angle = 100;
   distance = 200;
 }
 
@@ -71,12 +74,12 @@ cocos2d::Vec2 TankNode::calculateAnglePos(const float angle, const float distanc
 void TankNode::changeAngle(const bool doIncrease) {
   bool valueChanged = false;
   if ((angle < 180)  && (doIncrease)) {
-    angle += 5;
+    angle += kAngleStep;
     valueChanged = true;
   }
 
   if ((angle > 0)  && (!doIncrease)) {
-    angle -= 5;
+    angle -= kAngleStep;
     valueChanged = true;
   }
 
@@ -101,12 +104,12 @@ void TankNode::changeAngle(const bool doIncrease) {
 void TankNode::changeDistance(const bool doIncrease) {
   bool valueChanged = false;
   if ((distance < 550)  && (doIncrease)) {
-    distance += 20;
+    distance += kDistanceStep;
     valueChanged = true;
   }
 
   if ((distance > 0)  && (!doIncrease)) {
-    distance = distance - 20;
+    distance = distance - kDistanceStep;
     valueChanged = true;
   }
 

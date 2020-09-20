@@ -13,9 +13,11 @@ public:
   static BulletNode* create(std::shared_ptr<SixCatsLogger> c6);
 
   void setRoute(const cocos2d::Vec2& startPos, const cocos2d::Vec2& destinationPos);
+  cocos2d::Vec2 getDestinationPoint() const;
+
   void reevaluatePosition(const cocos2d::Vec2& basePos);
 
-  void doGo();
+  void doGo(cocos2d::CallFunc* evaluateDamageCB);
 
   static void unloadAnimations();
 //  std::list<ParatrooperNode*> doOnePass();

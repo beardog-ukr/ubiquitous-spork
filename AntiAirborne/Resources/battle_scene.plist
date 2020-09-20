@@ -150,7 +150,7 @@
     <key>spriteSourceSize</key>
     <string>{48,48}</string>
     <key>textureRect</key>
-    <string>{{672,449},{28,33}}</string>
+    <string>{{321,765},{28,33}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -165,7 +165,7 @@
     <key>spriteSourceSize</key>
     <string>{48,48}</string>
     <key>textureRect</key>
-    <string>{{757,288},{28,32}}</string>
+    <string>{{758,366},{28,32}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -180,7 +180,7 @@
     <key>spriteSourceSize</key>
     <string>{48,48}</string>
     <key>textureRect</key>
-    <string>{{271,779},{28,29}}</string>
+    <string>{{799,288},{28,29}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -195,7 +195,7 @@
     <key>spriteSourceSize</key>
     <string>{48,48}</string>
     <key>textureRect</key>
-    <string>{{757,322},{28,31}}</string>
+    <string>{{714,457},{28,31}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -211,6 +211,96 @@
     <string>{48,48}</string>
     <key>textureRect</key>
     <string>{{321,729},{28,34}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>anti_aiborne/paratrooper/gunner_run_00</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{-3,2}</string>
+    <key>spriteSize</key>
+    <string>{38,34}</string>
+    <key>spriteSourceSize</key>
+    <string>{48,48}</string>
+    <key>textureRect</key>
+    <string>{{271,779},{38,34}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>anti_aiborne/paratrooper/gunner_run_01</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{-4,3}</string>
+    <key>spriteSize</key>
+    <string>{40,35}</string>
+    <key>spriteSourceSize</key>
+    <string>{48,48}</string>
+    <key>textureRect</key>
+    <string>{{672,421},{40,35}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>anti_aiborne/paratrooper/gunner_run_02</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{-3,2}</string>
+    <key>spriteSize</key>
+    <string>{38,34}</string>
+    <key>spriteSourceSize</key>
+    <string>{48,48}</string>
+    <key>textureRect</key>
+    <string>{{757,324},{38,34}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>anti_aiborne/paratrooper/gunner_run_03</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{-4,3}</string>
+    <key>spriteSize</key>
+    <string>{40,34}</string>
+    <key>spriteSourceSize</key>
+    <string>{48,48}</string>
+    <key>textureRect</key>
+    <string>{{672,458},{40,34}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>anti_aiborne/paratrooper/gunner_run_04</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{-4,4}</string>
+    <key>spriteSize</key>
+    <string>{40,34}</string>
+    <key>spriteSourceSize</key>
+    <string>{48,48}</string>
+    <key>textureRect</key>
+    <string>{{757,288},{40,34}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>anti_aiborne/paratrooper/gunner_run_05</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{-3,2}</string>
+    <key>spriteSize</key>
+    <string>{38,34}</string>
+    <key>spriteSourceSize</key>
+    <string>{48,48}</string>
+    <key>textureRect</key>
+    <string>{{714,421},{38,34}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -285,7 +375,7 @@
     <key>spriteSourceSize</key>
     <string>{38,26}</string>
     <key>textureRect</key>
-    <string>{{672,421},{38,26}}</string>
+    <string>{{672,494},{38,26}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -315,7 +405,7 @@
     <key>spriteSourceSize</key>
     <string>{40,12}</string>
     <key>textureRect</key>
-    <string>{{712,421},{40,12}}</string>
+    <string>{{672,522},{40,12}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -330,7 +420,7 @@
     <key>spriteSourceSize</key>
     <string>{20,13}</string>
     <key>textureRect</key>
-    <string>{{672,484},{20,13}}</string>
+    <string>{{758,400},{20,13}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>

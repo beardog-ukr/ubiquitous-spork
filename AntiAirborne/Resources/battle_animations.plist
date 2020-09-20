@@ -46,6 +46,21 @@
     </array>
   </dict>
 
+  <key>paratrooper_run</key>
+  <dict>
+    <key>delay</key>
+    <real>0.2</real>
+    <key>frames</key>
+    <array>
+      <string>anti_aiborne/paratrooper/gunner_run_00</string>
+      <string>anti_aiborne/paratrooper/gunner_run_01</string>
+      <string>anti_aiborne/paratrooper/gunner_run_02</string>
+      <string>anti_aiborne/paratrooper/gunner_run_03</string>
+      <string>anti_aiborne/paratrooper/gunner_run_04</string>
+      <string>anti_aiborne/paratrooper/gunner_run_05</string>
+    </array>
+  </dict>
+
 </dict>
 </dict>
 </plist>

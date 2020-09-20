@@ -19,7 +19,6 @@ protected:
 
   virtual bool init();
   bool initBackground();
-  bool initOther();
   bool initTank();
   bool initPlane();
   bool initKeyboardProcessing();
@@ -31,13 +30,17 @@ protected:
 
   TankNode* tankNode;
 
-  std::list<ParatrooperNode*> paratroopers;
+  void evaluateDamage(const cocos2d::Vec2 explosionPoint);
+  std::list<ParatrooperNode*> paratroopers;// TODO: WARN: this list never clears
   PlaneNode* plane;
 
   void doDropTroopers(float unused);
 
   static bool loadSpriteCache(std::shared_ptr<SixCatsLogger> c6);
   static void unloadSpriteCache();
+
+  int escapeCounter;
+  void increaseEscapeCounter();
 };
 
 }

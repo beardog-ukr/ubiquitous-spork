@@ -38,14 +38,19 @@ static const struct {
   .tank = "tank.png"
 };
 
-static const float kDropsInterval = 5;// interval between drop oprations in seconds
+static const float kDropsInterval = 8;// interval between drop oprations in seconds
+
+static const float kExplosionKillingRadius = 125;
 
 static const string kPlistFileName = "battle_scene.plist";
 static const string kPlistAnimationsFileName = "battle_animations.plist";
 
+static const int kEscapesLimit = 5;
+
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 BattleScene::BattleScene() {
+  escapeCounter = 0;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -90,10 +95,45 @@ void BattleScene::doDropTroopers(float) {
 
   list<ParatrooperNode*> newTroopers = plane->doOnePass();
 
+  CallFunc* cf = CallFunc::create([this] {
+    this->increaseEscapeCounter();
+  });
+
   for(ParatrooperNode* nt: newTroopers) {
     addChild(nt, kBattleSceneZO.paratrooper);
-    nt->doDrop();
+    nt->doDrop(cf);
     paratroopers.push_back(nt);
+  }
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+void BattleScene::evaluateDamage(const cocos2d::Vec2 explosionPoint) {
+  C6_D4(c6, "Need to evaluate damage at ", explosionPoint.x, ":", explosionPoint.y);
+
+  for(ParatrooperNode* paratrooper: paratroopers) {
+    if (!paratrooper->isAlive()) {
+      continue;
+    }
+
+    Vec2 cpp = paratrooper->getPosition();
+    const float distance = sqrt( (cpp.x - explosionPoint.x)*(cpp.x - explosionPoint.x) +
+                                 (cpp.y - explosionPoint.y)*(cpp.y - explosionPoint.y));
+    if (distance < kExplosionKillingRadius) {
+      C6_D5(c6, "Paratrooper at ", cpp.x, ":", cpp.y, " dies");
+      paratrooper->doDie();
+    }
+  }
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+void BattleScene::increaseEscapeCounter() {
+  escapeCounter++;
+  C6_D1(c6, "One more escaped");
+
+  if (escapeCounter >= kEscapesLimit) {
+    C6_D1(c6, "Ooops, game lost");
   }
 }
 
@@ -105,10 +145,6 @@ bool BattleScene::init() {
   }
 
   if (!initBackground() ) {
-    return false;
-  }
-
-  if (!initOther() ) {
     return false;
   }
 
@@ -157,63 +193,16 @@ bool BattleScene::initBackground() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-bool BattleScene::initOther() {
-//  Sprite* planeSprite = Sprite::create(kElementsSpriteFileNames.plane);
-//  if (planeSprite == nullptr) {
-//    C6_C2(c6, "Failed to find ", kElementsSpriteFileNames.plane);
-//    return false;
-//  }
-
-  const Size cs = getContentSize();
-//  planeSprite->setPosition(Vec2(cs.width/2, cs.height/2 + cs.height/4));
-//  addChild(planeSprite, kBattleSceneZO.terrain);
-
-//  Sprite* paratrooperSprite = Sprite::create(kElementsSpriteFileNames.paratrooper);
-//  if (paratrooperSprite == nullptr) {
-//    C6_C2(c6, "Failed to find ", kElementsSpriteFileNames.paratrooper);
-//    return false;
-//  }
-
-
-//  paratrooperSprite->setPosition(Vec2(cs.width/2, cs.height/2));
-//  addChild(paratrooperSprite, kBattleSceneZO.terrain);
-
-//  Sprite* tankSprite = Sprite::create(kElementsSpriteFileNames.tank);
-//  if (tankSprite == nullptr) {
-//    C6_C2(c6, "Failed to find ", kElementsSpriteFileNames.tank);
-//    return false;
-//  }
-
-
-//  tankSprite->setPosition(Vec2(cs.width/2, cs.height/8));
-//  addChild(tankSprite, kBattleSceneZO.terrain);
-
-
-//  paratrooper = ParatrooperNode::create(c6);
-//  if( paratrooper == nullptr) {
-//    return false;
-//  }
-
-//  paratrooper->setPosition(Vec2(cs.width/4, cs.height/2));
-//  addChild(paratrooper, kBattleSceneZO.paratrooper);
-
-  return true;
-}
-
-// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
 bool BattleScene::initPlane() {
   plane = PlaneNode::create(c6);
   if (plane == nullptr) {
     return false;
   }
 
-//  const Size cs = getContentSize();
-//  plane->setPosition(Vec2(cs.width/4 + cs.width/2, kPlaneEchelone));
   addChild(plane, kBattleSceneZO.plane);
 
-//  schedule(CC_SCHEDULE_SELECTOR(BattleScene::doDropTroopers), kDropsInterval,
-//           CC_REPEAT_FOREVER, 0);
+  schedule(CC_SCHEDULE_SELECTOR(BattleScene::doDropTroopers), kDropsInterval,
+           CC_REPEAT_FOREVER, 0);
 
   return true;
 }
@@ -254,10 +243,10 @@ bool BattleScene::loadSpriteCache(std::shared_ptr<SixCatsLogger> c6) {
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 void BattleScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
-  C6_D3(c6, "Key '", (int)keyCode, "' was pressed");
+  C6_T3(c6, "Key '", (int)keyCode, "' was pressed");
 
   if (EventKeyboard::KeyCode::KEY_BACKSPACE == keyCode) {
-    C6_D1(c6, "That was KEY_BACKSPACE, it stops game");
+    C6_T1(c6, "That was KEY_BACKSPACE, it does nothing");
   }
   else if (EventKeyboard::KeyCode::KEY_LEFT_ARROW == keyCode) {
     tankNode->startIncreasingAngle();
@@ -288,10 +277,10 @@ void BattleScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 void BattleScene::onKeyReleasedScene(EventKeyboard::KeyCode keyCode, Event *) {
-  C6_D3(c6, "Key '", (int)keyCode, "' was released");
+  C6_T3(c6, "Key '", (int)keyCode, "' was released");
 
   if (EventKeyboard::KeyCode::KEY_BACKSPACE == keyCode) {
-    C6_D1(c6, "That was KEY_BACKSPACE, it stops game");
+    C6_T1(c6, "That was KEY_BACKSPACE, it does nothing");
   }
   else if (EventKeyboard::KeyCode::KEY_LEFT_ARROW == keyCode) {
     tankNode->stopIncreasingAngle();
@@ -316,13 +305,15 @@ void BattleScene::processFireRequest() {
     return;
   }
 
-
   bullet->reevaluatePosition(tankNode->getPosition());
-//  bullet->setPosition(nbp);
-
   addChild(bullet, kBattleSceneZO.bullet);
 
-  bullet->doGo();
+  const Vec2 explosionPosition = bullet->getDestinationPoint();
+  CallFunc* edcf = CallFunc::create([this, explosionPosition] {
+    this->evaluateDamage(explosionPosition);
+  });
+
+  bullet->doGo(edcf);
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

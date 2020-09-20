@@ -9,7 +9,7 @@ using namespace anti_airborne;
 #include "SixCatsLoggerMacro.h"
 #include <sstream>
 
-//#include <tgmath.h>  // sin cos
+#include "AudioEngine.h"
 USING_NS_CC;
 using namespace std;
 
@@ -21,28 +21,20 @@ static const float kStartingX = -110;
 static const float kFinishX = 1280 + 110;
 static const int kEchelone = 640;
 
+static const int kLeftZoneStart = 30;
+static const int kLeftZoneLength = 530;
+static const int kRightZoneStart = 700;
+static const int kRightZoneLength = 540;
+
 static const int kAngleManipulationActionTag = 21;
 //static const int kDistanceManipulationActionTag = 22;
-//static const float kAngleChangeInterval = 0.5;
+static const string kEngineSoundFN = "sounds/plane.wav";
 static const string kBaseSpriteName = "anti_aiborne/planes/plane";
-
-//static const struct {
-//  string body;
-//  string parachute;
-////  string tracks;
-////  string turret;
-//} kElementSpriteFileNames = {
-//  .body = "anti_aiborne/palne/gunner_jump_00",
-//  .parachute = "anti_aiborne/paratrooper/para",
-////  .tracks = "anti_aiborne/tank/tracks",
-////  .turret = "anti_aiborne/tank/turret1",
-//};
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 PlaneNode::PlaneNode() {
-//  angle = 45;
-//  distance = 200;
+  dropsPerOperation = 2;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -79,32 +71,44 @@ list<ParatrooperNode*> PlaneNode::doOnePass() {
 
   setPosition(kStartingX, kEchelone);
 
-  Vec2 dropPoint;
-  dropPoint.x = 400;
-  dropPoint.y = kEchelone;
+  float flyPath = kFinishX - kStartingX;
+  float flyTime = flyPath / kGeneralVelocity;
 
-  float pathToDrop = dropPoint.x - kStartingX;
-  float timeToDrop = pathToDrop / kGeneralVelocity;
+  MoveTo* mt = MoveTo::create(flyTime, Vec2(kFinishX, kEchelone));
+  runAction(mt);
 
-  MoveTo* moveToDrop = MoveTo::create(timeToDrop, dropPoint);
-  //TODO: use acceleration/deceleration here
-//  EaseIn* ea = EaseIn::create(mta, 3.0f);
+  // --- audio
+  int startingSoundId = AudioEngine::play2d(kEngineSoundFN);
+  if (startingSoundId == AudioEngine::INVALID_AUDIO_ID) {
+    C6_D1(c6, "audio id invalid");
+  }
 
-  float pathFromDrop = kFinishX - dropPoint.x;
-  float timeFromDrop = pathFromDrop / kGeneralVelocity;
+  // --- create troopers
+  for(int i = 1; i<= dropsPerOperation; i++) {
+    const int rside = RandomHelper::random_int((int)0, 1);
+    const float rmod = RandomHelper::random_int((int)0, 99) / 100.0;
 
-  MoveTo* moveFromDrop = MoveTo::create(timeFromDrop, Vec2(kFinishX, kEchelone));
+    C6_D4(c6, "Random values are ", rside, " and ", rmod);
 
-  Sequence* seq = Sequence::create(moveToDrop, moveFromDrop, nullptr);
-  runAction(seq);
+    float rX;
+    if (rside == 0 ) {
+      rX = kLeftZoneStart + kLeftZoneLength*rmod;
+    }
+    else {
+      rX = kRightZoneStart + kRightZoneLength*rmod;
+    }
 
-  ParatrooperNode* paratrooper = ParatrooperNode::create(c6);
-//  paratrooper->setPosition(dropPoint);
-  paratrooper->setDropParameters(timeToDrop, dropPoint);
+    const Vec2 dropPoint(rX, kEchelone);
 
-  result.push_back(paratrooper);
+    const float pathToDrop = dropPoint.x - kStartingX;
+    const float timeToDrop = pathToDrop / kGeneralVelocity;
 
+    ParatrooperNode* paratrooper = ParatrooperNode::create(c6);
+    paratrooper->setDropParameters(timeToDrop, dropPoint);
+    C6_D6(c6, "Dropping trooper at ", dropPoint.x, ":", dropPoint.y, " after ", timeToDrop);
 
+    result.push_back(paratrooper);
+  }
 
   return result;
 }

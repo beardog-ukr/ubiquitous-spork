@@ -9,7 +9,7 @@ using namespace anti_airborne;
 #include "SixCatsLoggerMacro.h"
 #include <sstream>
 
-//#include <tgmath.h>  // sin cos
+#include "AudioEngine.h"
 USING_NS_CC;
 using namespace std;
 
@@ -25,14 +25,17 @@ static const float kGeneralVelocity = kGeneralPath/kGeneralTime;
 
 static const string kExplosionAnimationName = "explosion";
 static const string kExplosionStartFrameName = "anti_aiborne/explosion/explosion_00";
+
+static const int kExplosionSoundsMaxId = 2;
+static const string kExplosionSounds[kExplosionSoundsMaxId] = {
+  "sounds/Explosion3.wav", "sounds/Explosion4.wav"};
 static const float kExplosionDuration = 1.8;
 static const string kBaseSpriteName = "anti_aiborne/tank/tank_bullet3";
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 BulletNode::BulletNode() {
-//  angle = 45;
-//  distance = 200;
+//
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -75,15 +78,20 @@ void BulletNode::doExplode() {
 
   Animation* animationE = AnimationCache::getInstance()->getAnimation(kExplosionAnimationName);
 //  C6_D2(c6, "Animation Duration ", animationE->getDuration());
-
   Animate* animateE = Animate::create(animationE);
 
   es->runAction(animateE);
+
+  const int esfnid = RandomHelper::random_int((int)0, kExplosionSoundsMaxId-1);
+  int startingSoundId = AudioEngine::play2d(kExplosionSounds[esfnid]);
+  if (startingSoundId == AudioEngine::INVALID_AUDIO_ID) {
+    C6_D1(c6, "audio id invalid");
+  }
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-void BulletNode::doGo() {
+void BulletNode::doGo(cocos2d::CallFunc* evaluateDamageCB) {
   const Vec2 currentPos = getPosition();
   const float xDiff = destinationPoint.x - currentPos.x;
   const float yDiff = destinationPoint.y - currentPos.y;
@@ -99,10 +107,16 @@ void BulletNode::doGo() {
     this->doExplode();
   });
 
-  Sequence* seq = Sequence::create(mt, cf, DelayTime::create(kExplosionDuration),
+  Sequence* seq = Sequence::create(mt, cf, evaluateDamageCB,
+                                   DelayTime::create(kExplosionDuration),
                                    RemoveSelf::create(),  nullptr);
-
   runAction(seq);
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+Vec2 BulletNode::getDestinationPoint() const {
+  return destinationPoint;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
