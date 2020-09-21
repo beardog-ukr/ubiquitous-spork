@@ -27,8 +27,13 @@ static const string kExplosionAnimationName = "explosion";
 static const string kExplosionStartFrameName = "anti_aiborne/explosion/explosion_00";
 
 static const int kExplosionSoundsMaxId = 2;
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+static const string kExplosionSounds[kExplosionSoundsMaxId] = {
+  "sounds\Explosion3.mp3", "sounds\Explosion4.mp3"};
+#else
 static const string kExplosionSounds[kExplosionSoundsMaxId] = {
   "sounds/Explosion3.wav", "sounds/Explosion4.wav"};
+#endif
 static const float kExplosionDuration = 1.8;
 static const string kBaseSpriteName = "anti_aiborne/tank/tank_bullet3";
 

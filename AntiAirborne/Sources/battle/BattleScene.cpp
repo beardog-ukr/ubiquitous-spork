@@ -4,6 +4,7 @@
 #include "battle/ParatrooperNode.h"
 #include "battle/PlaneNode.h"
 #include "battle/TankNode.h"
+#include "ui/GameEndScene.h"
 #include "ZOrderConstTypes.h"
 #include "ZOrderConstValues.h"
 
@@ -11,8 +12,6 @@
 #include "SixCatsLogger.h"
 #include "SixCatsLoggerMacro.h"
 #include <sstream>
-
-// #include "AudioEngine.h"
 
 using namespace anti_airborne;
 using namespace std;
@@ -38,19 +37,21 @@ static const struct {
   .tank = "tank.png"
 };
 
-static const float kDropsInterval = 8;// interval between drop oprations in seconds
+static const float kDropsInterval = 9;// interval between drop oprations in seconds
 
 static const float kExplosionKillingRadius = 125;
 
 static const string kPlistFileName = "battle_scene.plist";
 static const string kPlistAnimationsFileName = "battle_animations.plist";
 
-static const int kEscapesLimit = 5;
+static const int kEscapesLimit = 3;
+static const int kPlaneAttacksLimit = 12;
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 BattleScene::BattleScene() {
   escapeCounter = 0;
+  planeAttacksCounter = 0;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -61,7 +62,7 @@ BattleScene::~BattleScene() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-Scene* BattleScene::createScene(std::shared_ptr<SixCatsLogger> inC6) {
+Scene* BattleScene::createScene(const bool showHelp, std::shared_ptr<SixCatsLogger> inC6) {
   BattleScene *pRet = new(std::nothrow) BattleScene();
 
   do {
@@ -75,7 +76,7 @@ Scene* BattleScene::createScene(std::shared_ptr<SixCatsLogger> inC6) {
 
     pRet->setLogger(inC6);
 
-    if (pRet->init()) {
+    if (pRet->init(showHelp)) {
       pRet->autorelease();
       return pRet; //successful exit
     }
@@ -91,6 +92,7 @@ Scene* BattleScene::createScene(std::shared_ptr<SixCatsLogger> inC6) {
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 void BattleScene::doDropTroopers(float) {
+  increasePlaneAttacksCounter();
   C6_D1(c6, "Starting new drop operaion");
 
   list<ParatrooperNode*> newTroopers = plane->doOnePass();
@@ -134,12 +136,32 @@ void BattleScene::increaseEscapeCounter() {
 
   if (escapeCounter >= kEscapesLimit) {
     C6_D1(c6, "Ooops, game lost");
+    Scene* geScene = GameEndScene::createScene(false, c6);
+    if (geScene == nullptr) {
+      return;
+    }
+
+    Director::getInstance()->replaceScene(geScene);
   }
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-bool BattleScene::init() {
+void BattleScene::increasePlaneAttacksCounter() {
+  planeAttacksCounter++;
+  if (planeAttacksCounter >= kPlaneAttacksLimit) {
+    Scene* geScene = GameEndScene::createScene(true, c6);
+    if (geScene == nullptr) {
+      return;
+    }
+
+    Director::getInstance()->replaceScene(geScene);
+  }
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+bool BattleScene::init(const bool showHelp) {
   if ( !Scene::init() ) {
     return false;
   }
@@ -148,7 +170,13 @@ bool BattleScene::init() {
     return false;
   }
 
-  if (!initPlane()) {
+  if (showHelp) {
+    if (!initHelpMessages() ) {
+      return false;
+    }
+  }
+
+  if (!initPlane(!showHelp)) {
     return false;
   }
 
@@ -159,6 +187,69 @@ bool BattleScene::init() {
   if (!initKeyboardProcessing()) {
     return false;
   }
+
+  return true;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+bool BattleScene::initHelpMessages() {
+  const float kFadeInterval = 1.0;
+
+  Sequence* seq;
+  Label* label;
+  string message;
+
+  label = Label::createWithTTF("Welcome, soldier", "fonts/GravityBold8.ttf", 48);
+  label->setTextColor(Color4B(255, 255, 255, 255));
+  label->setAnchorPoint(Vec2(0,0.5));
+  label->setPosition(50, 600);
+  label->setOpacity(0);
+  addChild(label, kBattleSceneZO.helpLabel);
+
+  seq = Sequence::create(FadeIn::create(kFadeInterval), DelayTime::create(2.0),
+                         FadeOut::create(kFadeInterval), RemoveSelf::create(), nullptr);
+  label->runAction(seq);
+
+  message = "Shoot enemies before they reach the ground";
+  label = Label::createWithTTF(message, "fonts/ThaleahFat.ttf", 32);
+  label->setTextColor(Color4B(255, 255, 255, 255));
+  label->setAnchorPoint(Vec2(0,0.5));
+  label->setPosition(50, 400);
+  label->setOpacity(0);
+  addChild(label, kBattleSceneZO.helpLabel);
+
+  seq = Sequence::create(DelayTime::create(3.0),
+                         FadeIn::create(kFadeInterval), DelayTime::create(2.0),
+                         FadeOut::create(kFadeInterval), RemoveSelf::create(), nullptr);
+  label->runAction(seq);
+
+  message = "Use arrows to aim, space to shoot";
+  label = Label::createWithTTF(message, "fonts/ThaleahFat.ttf", 32);
+  label->setTextColor(Color4B(255, 255, 255, 255));
+  label->setAnchorPoint(Vec2(0,0.5));
+  label->setPosition(50, 300);
+  label->setOpacity(0);
+  addChild(label, kBattleSceneZO.helpLabel);
+
+  seq = Sequence::create(DelayTime::create(6.0),
+                         FadeIn::create(kFadeInterval), DelayTime::create(2.0),
+                         FadeOut::create(kFadeInterval), RemoveSelf::create(), nullptr);
+  label->runAction(seq);
+
+  message = "Area of explosion is quite large, use it to kill few birds with one stone";
+  label = Label::createWithTTF(message, "fonts/ThaleahFat.ttf", 32);
+  label->setTextColor(Color4B(255, 255, 255, 255));
+  label->setAnchorPoint(Vec2(0,0.5));
+  label->setPosition(50, 200);
+  label->setOpacity(0);
+  addChild(label, kBattleSceneZO.helpLabel);
+
+  seq = Sequence::create(DelayTime::create(8.0),
+                         FadeIn::create(kFadeInterval), DelayTime::create(2.0),
+                         FadeOut::create(kFadeInterval), RemoveSelf::create(), nullptr);
+  label->runAction(seq);
+
 
   return true;
 }
@@ -193,7 +284,7 @@ bool BattleScene::initBackground() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-bool BattleScene::initPlane() {
+bool BattleScene::initPlane(const bool immediate) {
   plane = PlaneNode::create(c6);
   if (plane == nullptr) {
     return false;
@@ -203,6 +294,10 @@ bool BattleScene::initPlane() {
 
   schedule(CC_SCHEDULE_SELECTOR(BattleScene::doDropTroopers), kDropsInterval,
            CC_REPEAT_FOREVER, 0);
+
+  if (immediate) {
+    doDropTroopers(0);
+  }
 
   return true;
 }
@@ -218,7 +313,6 @@ bool BattleScene::initTank() {
   const Size cs = getContentSize();
   tankNode->setPosition(Vec2(cs.width/2, 50));
   addChild(tankNode, kBattleSceneZO.tank);
-
 
   return true;
 }

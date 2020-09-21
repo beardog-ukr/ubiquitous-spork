@@ -1,5 +1,6 @@
 #include "AppDelegate.h"
 #include "battle/BattleScene.h"
+#include "ui/GameEndScene.h"
 
 #include "SixCatsLogger.h"
 #include "SixCatsLoggerMacro.h"
@@ -18,7 +19,7 @@ static cocos2d::Size designResolutionSize = cocos2d::Size(1280, 720);
 
 AppDelegate::AppDelegate() {
   //Logging level for the application is set here in next line
-  c6 = std::make_shared<SixCatsLogger>(SixCatsLogger::Debug);
+  c6 = std::make_shared<SixCatsLogger>(SixCatsLogger::Critical);
 }
 
 AppDelegate::~AppDelegate() {
@@ -59,8 +60,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setOpenGLView(glview);
   }
 
-  // turn on display FPS
-  director->setDisplayStats(true);
+  // turn on/off display FPS
+  director->setDisplayStats(false);
 
   // set FPS. the default value is 1.0/60 if you don't call this
   director->setAnimationInterval(1.0f / 60);
@@ -71,7 +72,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
   register_all_packages();
 
-  Scene* scene = anti_airborne::BattleScene::createScene(c6);
+  Scene* scene = anti_airborne::BattleScene::createScene(true, c6);
+//  Scene* scene = anti_airborne::GameEndScene::createScene(false, c6);
   if (scene == nullptr) {
     C6_C1(c6, "Failed to create a scene.");
     return false;

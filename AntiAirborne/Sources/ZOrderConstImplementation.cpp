@@ -19,6 +19,16 @@ const struct anti_airborne::BattleSceneZOrderValues anti_airborne::kBattleSceneZ
   .bullet = 50,
   .explosion = 55,
 
-  .crosshair = 60
+  .crosshair = 60,
+  .helpLabel = 61
 };
 
+const struct anti_airborne::GameEndSceneZOrderValues anti_airborne::kGameEndSceneZO = {
+  .background = 10,
+  .terrain = 11,
+
+  .menu = 20,
+
+  .image = 30,
+  .label = 31
+};

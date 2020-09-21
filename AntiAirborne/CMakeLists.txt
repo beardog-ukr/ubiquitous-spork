@@ -38,6 +38,7 @@ list(APPEND GAME_SOURCE
      Sources/battle/ParatrooperNode.cpp
      Sources/battle/PlaneNode.cpp
      Sources/battle/TankNode.cpp
+     Sources/ui/GameEndScene.cpp
      )
 list(APPEND GAME_HEADER
      Sources/AppDelegate.h
@@ -48,6 +49,7 @@ list(APPEND GAME_HEADER
      Sources/battle/ParatrooperNode.h
      Sources/battle/PlaneNode.h
      Sources/battle/TankNode.h
+     Sources/ui/GameEndScene.h
      )
 
 if(ANDROID)

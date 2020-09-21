@@ -28,7 +28,13 @@ static const int kRightZoneLength = 540;
 
 static const int kAngleManipulationActionTag = 21;
 //static const int kDistanceManipulationActionTag = 22;
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+static const string kEngineSoundFN = "sounds\plane.mp3";
+#else
 static const string kEngineSoundFN = "sounds/plane.wav";
+#endif
+
 static const string kBaseSpriteName = "anti_aiborne/planes/plane";
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

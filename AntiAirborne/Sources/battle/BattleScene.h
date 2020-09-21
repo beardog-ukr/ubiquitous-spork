@@ -11,16 +11,17 @@ class TankNode;
 
 class BattleScene : public cocos2d::Scene,  virtual public SixCatsLoggerLoggable {
 public:
-  static cocos2d::Scene* createScene(std::shared_ptr<SixCatsLogger> c6);
+  static cocos2d::Scene* createScene(const bool showHelp, std::shared_ptr<SixCatsLogger> c6);
 
 protected:
   BattleScene();
   virtual ~BattleScene();
 
-  virtual bool init();
+  virtual bool init(const bool showHelp);
   bool initBackground();
   bool initTank();
-  bool initPlane();
+  bool initPlane(const bool immediate);
+  bool initHelpMessages();
   bool initKeyboardProcessing();
 
   void processFireRequest();
@@ -41,6 +42,9 @@ protected:
 
   int escapeCounter;
   void increaseEscapeCounter();
+
+  int planeAttacksCounter;
+  void increasePlaneAttacksCounter();
 };
 
 }

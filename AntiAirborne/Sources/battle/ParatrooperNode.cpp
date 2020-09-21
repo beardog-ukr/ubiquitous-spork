@@ -74,6 +74,7 @@ void ParatrooperNode::doDie() {
   alive = false;
   parachute->stopAllActions();
   body->stopAllActions();
+  stopAllActions();
 
   body->runAction(FadeOut::create(kFadeinInterval));
   parachute->runAction(FadeOut::create(kFadeinInterval));
